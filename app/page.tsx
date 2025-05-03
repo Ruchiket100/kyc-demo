@@ -1,8 +1,9 @@
 "use client";
-import Image from "next/image";
-import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useMediaQuery } from "react-responsive";
+import { SentenceRotator } from "@/components/SentenceRotator";
+import Button from "@/components/Button";
 
 export default function Home() {
 	const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
@@ -28,10 +29,10 @@ export default function Home() {
 
 	const capData = useMemo(() => {
 		return Array.from({ length: TOTAL_CAPS }).map((_, i) => {
-			const lane = (i % 10) * 10 + Math.random() * 5; // Prevent overlapping in lanes
-			const verticalOffset = Math.random() * 50; // Random vertical spawn
+			const lane = (i % 10) * 10 + Math.random() * 5;
+			const verticalOffset = Math.random() * 50;
 			const rotate = 10;
-			const size = Math.random() < 0.5 ? 10 : 12; // Simulate depth
+			const size = Math.random() < 0.5 ? 10 : 12;
 			const scale = size === 10 ? 0.8 : 1;
 			const opacity = size === 10 ? 0.5 : 1;
 			const duration = size === 10 ? 2.5 : 2;
@@ -286,70 +287,5 @@ export default function Home() {
 				)}
 			</div>
 		</section>
-	);
-}
-
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-	accent?: boolean;
-	icon?: string;
-	children: React.ReactNode;
-}
-
-export function Button(props: ButtonProps) {
-	const { accent, icon, children, ...rest } = props;
-	return (
-		<button
-			{...rest}
-			className={`flex flex-row gap-3 px-6 py-2 transition-all cursor-pointer items-center justify-between rounded-full ${
-				accent
-					? "bg-accent text-black hover:bg-accent-active"
-					: "bg-secondary-active text-white border border-border"
-			} ${rest.className}`}
-		>
-			<h2 className="font-bold text-sm">{children}</h2>
-			{icon && <i className={`far fa-${icon}`}></i>}
-		</button>
-	);
-}
-
-const sentences = [
-	"Not Just Colleges,\nReal People.\n Real Stories.",
-	"Ask A Senior!\n One Conversation Can\nChange Your Life.",
-	"Know The Truth\n Behind The\nCampus Walls.",
-];
-
-export function SentenceRotator() {
-	const [activeIndex, setActiveIndex] = useState(0);
-	const [direction, setDirection] = useState("up");
-
-	useEffect(() => {
-		const interval = setInterval(() => {
-			setDirection("up");
-			setActiveIndex((prev) => (prev + 1) % sentences.length);
-		}, 3000);
-
-		return () => clearInterval(interval);
-	}, []);
-
-	return (
-		<div className="relative h-[120px] w-[400px] overflow-hidden ">
-			<AnimatePresence initial={false} custom={direction}>
-				<motion.div
-					key={activeIndex}
-					custom={direction}
-					initial={{ y: direction === "up" ? 150 : -150, opacity: 0 }}
-					animate={{ y: 0, opacity: 1 }}
-					exit={{ y: direction === "up" ? -150 : 150, opacity: 0 }}
-					transition={{ duration: 0.8, ease: "easeInOut" }}
-					className="absolute w-full  text-3xl font-extrabold text-end"
-				>
-					{sentences[activeIndex].split("\n").map((line, i) => (
-						<span key={i} className="block">
-							{line}
-						</span>
-					))}
-				</motion.div>
-			</AnimatePresence>
-		</div>
 	);
 }
