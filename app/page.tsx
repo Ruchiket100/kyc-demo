@@ -1,103 +1,355 @@
+"use client";
 import Image from "next/image";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useMediaQuery } from "react-responsive";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+	const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
+	const [startFall, setStartFall] = useState(false);
+	const [showOverlay, setShowOverlay] = useState(false);
+	const [startRotate, setStartRotate] = useState(false);
+	const TOTAL_CAPS = isMobile ? 10 : 25;
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+	useEffect(() => {
+		const fallTimer = setTimeout(() => {
+			setStartFall(true);
+		}, 1000);
+
+		const overlayTimer = setTimeout(() => {
+			setShowOverlay(true);
+		}, 2500); // after caps finish falling
+
+		return () => {
+			clearTimeout(fallTimer);
+			clearTimeout(overlayTimer);
+		};
+	}, []);
+
+	const capData = useMemo(() => {
+		return Array.from({ length: TOTAL_CAPS }).map((_, i) => {
+			const lane = (i % 10) * 10 + Math.random() * 5; // Prevent overlapping in lanes
+			const verticalOffset = Math.random() * 50; // Random vertical spawn
+			const rotate = 10;
+			const size = Math.random() < 0.5 ? 10 : 12; // Simulate depth
+			const scale = size === 10 ? 0.8 : 1;
+			const opacity = size === 10 ? 0.5 : 1;
+			const duration = size === 10 ? 2.5 : 2;
+			const capType = Math.floor(Math.random() * 2) + 1;
+
+			return {
+				left: lane,
+				top: verticalOffset,
+				rotate,
+				scale,
+				opacity,
+				duration,
+				capType,
+				size,
+			};
+		});
+	}, []);
+
+	useEffect(() => {
+		const startTimer = setTimeout(() => setStartFall(true), 1000);
+		const overlayTimer = setTimeout(() => setShowOverlay(true), 4000);
+
+		return () => {
+			clearTimeout(startTimer);
+			clearTimeout(overlayTimer);
+		};
+	}, []);
+
+	return (
+		<section className="w-screen overflow-hidden">
+			{/* Top Header */}
+			<div className="bg-secondary w-full px-4 md:px-30 flex items-center justify-between py-4 border-b-2 border-black">
+				<h1 className="text-white font-extrabold">KYC</h1>
+				<div className="flex gap-4 items-center">
+					{[
+						{ title: "Home", accent: false },
+						{ title: "Programs", accent: false },
+						{
+							title: "Become Mentor",
+							icon: "graduation-cap",
+							accent: true,
+						},
+					].map((item, index) => (
+						<Button
+							key={index}
+							icon={item.icon}
+							accent={item.accent}
+							className={`${
+								!!item.accent ? " " : "hidden md:flex"
+							}`}
+						>
+							{item.title}
+						</Button>
+					))}
+				</div>
+			</div>
+
+			{/* Secondary Nav */}
+			<div className=" items-center justify-between md:px-40 py-4 bg-secondary hidden md:flex">
+				<div className="flex items-center gap-4">
+					{[
+						{ title: "College Events" },
+						{ title: "College Compare" },
+						{ title: "College Predictors" },
+					].map((item, index) => (
+						<Button key={index}>{item.title}</Button>
+					))}
+				</div>
+				<Button icon="circle-user" accent={true}>
+					Login
+				</Button>
+			</div>
+
+			{/* Hero Section */}
+			<div
+				className={`relative overflow-hidden not-visited:min-h-[70vh] w-full bg-[#c3fddc] flex justify-center transition-all duration-75`}
+			>
+				<div className="px-4 md:px-40 z-30 w-full h-full bg-accent">
+					<motion.div
+						initial={{
+							top: isMobile ? "30%" : "40%",
+							left: isMobile ? "50%" : "50%",
+							x: isMobile ? "-50%" : "-50%",
+							y: "-50%",
+							scale: 1,
+							position: "absolute",
+						}}
+						animate={
+							!isMobile && showOverlay
+								? {
+										left: "10rem",
+										x: 0,
+										y: isMobile ? "30%" : "-63%",
+										top: isMobile ? "30%" : "40%",
+								  }
+								: {
+										left: "49%",
+										x: "-50%",
+										y: "-50%",
+										top: isMobile ? "30%" : "40%",
+								  }
+						}
+						transition={{
+							duration: 0.6,
+							ease: "easeInOut",
+						}}
+						className="absolute z-[990] pointer-events-none"
+					>
+						<h1 className="relative mix-blend-difference text-black uppercase tracking-tight leading-[0.83] text-start font-[900] text-[4rem] md:text-[9.8rem]">
+							know your <br />
+							<span className="font-[900] text-[5rem] md:text-[13rem]">
+								colleges
+							</span>
+						</h1>
+					</motion.div>
+					{showOverlay && (
+						<motion.svg
+							width="500"
+							height="500"
+							viewBox="0 0 362 362"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+							className="absolute md:top-30 md:left-80 z-40 mix-blend-difference"
+							initial={{ y: 500, opacity: 0, rotate: 0 }}
+							animate={{ y: 0, opacity: 0.9 }}
+							transition={{
+								type: "spring",
+								stiffness: 100,
+								duration: 1,
+								ease: "easeInOut",
+							}}
+							onAnimationComplete={() =>
+								setTimeout(() => setStartRotate(true), 200)
+							}
+						>
+							<motion.g
+								animate={startRotate ? { rotate: 8 } : {}}
+								transition={{
+									type: "spring",
+									stiffness: 100,
+									duration: 0.5,
+									ease: "easeInOut",
+								}}
+							>
+								<path
+									d="M55.0686 237.825C52.096 237.986 50.7297 234.186 53.1238 232.417L181.208 137.767C181.657 137.435 182.189 137.235 182.746 137.189L340.37 124.302C343.359 124.058 344.817 127.865 342.43 129.68L212.033 228.828C211.555 229.191 210.979 229.403 210.379 229.435L55.0686 237.825Z"
+									fill="#57fb9d"
+								/>
+								<path
+									d="M186.5 176L120.325 231.066C116.107 233.1 108.269 239.039 110.659 246.527C113.049 254.015 115.701 262.325 118.29 270.437M118.29 270.437C115.345 271.377 110.053 275.128 112.443 282.616C114.833 290.104 121.32 290.097 124.265 289.157M118.29 270.437C118.727 270.283 127.124 267.617 130.112 276.977C132.502 284.465 127.21 288.217 124.265 289.157M124.265 289.157L130.99 340.725C134.333 341.033 141.664 340.619 144.242 336.496L124.265 289.157Z"
+									stroke="#6C6C6C"
+									strokeWidth="3"
+									opacity={0.3}
+								/>
+								<path
+									d="M292.224 235.808C292.634 237.093 292.136 238.493 291.007 239.231L229.793 279.25C229.334 279.55 228.801 279.718 228.253 279.737L156.497 282.172C155.155 282.218 153.946 281.366 153.537 280.086L141.523 242.444C140.926 240.573 142.258 238.642 144.219 238.536L213.857 234.775C214.456 234.742 215.033 234.531 215.511 234.167L273.439 190.121C275.088 188.867 277.482 189.623 278.112 191.597L292.224 235.808Z"
+									fill="#57fb9d"
+								/>
+							</motion.g>
+						</motion.svg>
+					)}
+					<div
+						className={`hidden md:block w-[800px] h-[600px] bg-[#5BE38D] absolute top-0 right-0   duration-1000 ${
+							showOverlay
+								? "visible -translate-y-50 translate-x-110 rotate-50"
+								: "invisible -translate-y-500 translate-x-400 rotate-0"
+						}`}
+					></div>
+					<div
+						className={`hidden md:block w-[800px]  h-[600px] bg-[#5BE38D] absolute top-0 bottom-0  duration-1000 transition-all ${
+							showOverlay
+								? "visible translate-y-100 -translate-x-190 -rotate-30 "
+								: "invisible translate-y-400 -translate-x-0 rotate-0"
+						}`}
+					></div>
+					<div
+						className={`hidden md:block w-[800px] h-[600px] bg-[#5BE38D] absolute top-0 left-0  duration-1000 transition-all ${
+							showOverlay
+								? "visible  -translate-x-180 -translate-y-40 rotate-20"
+								: "invisible -translate-x-400 rotate-0"
+						}`}
+					></div>
+					<p
+						className={`text-black absolute top-14 md:text-xl pb-4 transition-all duration-200 ${
+							showOverlay
+								? "visible opacity-100 translate-y-0"
+								: "invisible opacity-0 -translate-y-10"
+						}`}
+					>
+						Connecting you with Seniors from your Desired Colleges &
+						Courses
+					</p>
+					<button
+						className={`absolute gap-2 bg-accent flex items-center rounded-full z-[20] bottom-20 px-6 py-2 font-extrabold text-xl border border-black duration-200  transition-all cursor-pointer ${
+							showOverlay
+								? "visible opacity-100"
+								: "invisible opacity-0"
+						}`}
+					>
+						Get Started
+						<i className="far fa-arrow-up-right" />
+					</button>
+					<div
+						className={`absolute z-[20] bottom-10 right-30 p-4 duration-400 transition-all hidden md:block ${
+							showOverlay
+								? "visible opacity-100"
+								: "invisible opacity-0"
+						}`}
+					>
+						<SentenceRotator />
+					</div>
+				</div>
+
+				{capData.map((cap, i) => (
+					<motion.div
+						key={i}
+						className="absolute"
+						style={{
+							left: `${cap.left}vw`,
+							top: `${cap.top}vh`,
+							transform: `scale(${cap.scale})`,
+							opacity: cap.opacity,
+						}}
+						initial={{ y: -200, rotate: 0 }}
+						animate={
+							startFall
+								? { y: 800, rotate: cap.rotate }
+								: { y: 0, rotate: 0 }
+						}
+						transition={{
+							duration: cap.duration,
+							ease: [0.42, 0, 1, 1],
+						}}
+					>
+						<img
+							src={`/captype-${cap.capType}.svg`}
+							alt="cap"
+							className="w-full h-auto"
+						/>
+					</motion.div>
+				))}
+				{showOverlay && (
+					<motion.div
+						initial={{ height: 0, borderRadius: "100% 100% 0 0" }}
+						animate={{ height: "100%", scale: 2 }}
+						transition={{
+							duration: 1.0,
+							ease: "easeInOut",
+						}}
+						className="absolute bottom-0 left-0 w-full  bg-accent z-[20]"
+					/>
+				)}
+			</div>
+		</section>
+	);
+}
+
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+	accent?: boolean;
+	icon?: string;
+	children: React.ReactNode;
+}
+
+export function Button(props: ButtonProps) {
+	const { accent, icon, children, ...rest } = props;
+	return (
+		<button
+			{...rest}
+			className={`flex flex-row gap-3 px-6 py-2 transition-all cursor-pointer items-center justify-between rounded-full ${
+				accent
+					? "bg-accent text-black hover:bg-accent-active"
+					: "bg-secondary-active text-white border border-border"
+			} ${rest.className}`}
+		>
+			<h2 className="font-bold text-sm">{children}</h2>
+			{icon && <i className={`far fa-${icon}`}></i>}
+		</button>
+	);
+}
+
+const sentences = [
+	"Not Just Colleges,\nReal People.\n Real Stories.",
+	"Ask A Senior!\n One Conversation Can\nChange Your Life.",
+	"Know The Truth\n Behind The\nCampus Walls.",
+];
+
+export function SentenceRotator() {
+	const [activeIndex, setActiveIndex] = useState(0);
+	const [direction, setDirection] = useState("up");
+
+	useEffect(() => {
+		const interval = setInterval(() => {
+			setDirection("up");
+			setActiveIndex((prev) => (prev + 1) % sentences.length);
+		}, 3000);
+
+		return () => clearInterval(interval);
+	}, []);
+
+	return (
+		<div className="relative h-[120px] w-[400px] overflow-hidden ">
+			<AnimatePresence initial={false} custom={direction}>
+				<motion.div
+					key={activeIndex}
+					custom={direction}
+					initial={{ y: direction === "up" ? 150 : -150, opacity: 0 }}
+					animate={{ y: 0, opacity: 1 }}
+					exit={{ y: direction === "up" ? -150 : 150, opacity: 0 }}
+					transition={{ duration: 0.8, ease: "easeInOut" }}
+					className="absolute w-full  text-3xl font-extrabold text-end"
+				>
+					{sentences[activeIndex].split("\n").map((line, i) => (
+						<span key={i} className="block">
+							{line}
+						</span>
+					))}
+				</motion.div>
+			</AnimatePresence>
+		</div>
+	);
 }
