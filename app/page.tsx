@@ -32,10 +32,10 @@ export default function Home() {
 			const lane = (i % 10) * 10 + Math.random() * 5;
 			const verticalOffset = Math.random() * 50;
 			const rotate = 10;
-			const size = Math.random() < 0.5 ? 10 : 12;
-			const scale = size === 10 ? 0.8 : 1;
-			const opacity = size === 10 ? 0.5 : 1;
-			const duration = size === 10 ? 2.5 : 2;
+			const size = Math.random() < 0.5 ? 14 : 16;
+			const scale = size === 14 ? 0.8 : 1;
+			const opacity = size === 14 ? 0.5 : 1;
+			const duration = size === 14 ? 2.5 : 2;
 			const capType = Math.floor(Math.random() * 2) + 1;
 
 			return {
@@ -113,7 +113,7 @@ export default function Home() {
 				<div className="px-4 md:px-40 z-30 w-full h-full bg-accent">
 					<motion.div
 						initial={{
-							top: isMobile ? "30%" : "40%",
+							top: isMobile ? "8rem" : "18rem",
 							left: isMobile ? "50%" : "50%",
 							x: isMobile ? "-50%" : "-50%",
 							y: "-50%",
@@ -126,10 +126,10 @@ export default function Home() {
 										left: "10rem",
 										x: 0,
 										y: isMobile ? "30%" : "-63%",
-										top: isMobile ? "30%" : "40%",
+										top: isMobile ? "14rem" : "18rem",
 								  }
 								: {
-										left: "49%",
+										left: isMobile ? "13.2rem" : "50%",
 										x: "-50%",
 										y: "-50%",
 										top: isMobile ? "30%" : "40%",
@@ -155,9 +155,9 @@ export default function Home() {
 							viewBox="0 0 362 362"
 							fill="none"
 							xmlns="http://www.w3.org/2000/svg"
-							className="absolute md:top-30 md:left-80 z-40 mix-blend-difference"
+							className="absolute md:top-30 md:left-80 z-[9999] mix-blend-difference"
 							initial={{ y: 500, opacity: 0, rotate: 0 }}
-							animate={{ y: 0, opacity: 0.9 }}
+							animate={{ y: 0, opacity: 0.6 }}
 							transition={{
 								type: "spring",
 								stiffness: 100,
@@ -179,17 +179,17 @@ export default function Home() {
 							>
 								<path
 									d="M55.0686 237.825C52.096 237.986 50.7297 234.186 53.1238 232.417L181.208 137.767C181.657 137.435 182.189 137.235 182.746 137.189L340.37 124.302C343.359 124.058 344.817 127.865 342.43 129.68L212.033 228.828C211.555 229.191 210.979 229.403 210.379 229.435L55.0686 237.825Z"
-									fill="#57fb9d"
+									fill="#ffffff"
 								/>
 								<path
 									d="M186.5 176L120.325 231.066C116.107 233.1 108.269 239.039 110.659 246.527C113.049 254.015 115.701 262.325 118.29 270.437M118.29 270.437C115.345 271.377 110.053 275.128 112.443 282.616C114.833 290.104 121.32 290.097 124.265 289.157M118.29 270.437C118.727 270.283 127.124 267.617 130.112 276.977C132.502 284.465 127.21 288.217 124.265 289.157M124.265 289.157L130.99 340.725C134.333 341.033 141.664 340.619 144.242 336.496L124.265 289.157Z"
-									stroke="#6C6C6C"
+									stroke="#ffffff"
 									strokeWidth="3"
-									opacity={0.3}
+									opacity={0.5}
 								/>
 								<path
 									d="M292.224 235.808C292.634 237.093 292.136 238.493 291.007 239.231L229.793 279.25C229.334 279.55 228.801 279.718 228.253 279.737L156.497 282.172C155.155 282.218 153.946 281.366 153.537 280.086L141.523 242.444C140.926 240.573 142.258 238.642 144.219 238.536L213.857 234.775C214.456 234.742 215.033 234.531 215.511 234.167L273.439 190.121C275.088 188.867 277.482 189.623 278.112 191.597L292.224 235.808Z"
-									fill="#57fb9d"
+									fill="#ffffff"
 								/>
 							</motion.g>
 						</motion.svg>
