@@ -126,13 +126,13 @@ export default function Home() {
 										left: "10rem",
 										x: 0,
 										y: isMobile ? "30%" : "-63%",
-										top: isMobile ? "14rem" : "18rem",
+										top: isMobile ? "15rem" : "18rem",
 								  }
 								: {
 										left: isMobile ? "13.2rem" : "50%",
 										x: "-50%",
 										y: "-50%",
-										top: isMobile ? "30%" : "40%",
+										top: isMobile ? "38%" : "45%",
 								  }
 						}
 						transition={{
